@@ -1,0 +1,16 @@
+{
+  "model_profile": "budget",
+  "model_overrides": {
+    "gsd-phase-researcher": "sonnet",
+    "gsd-project-researcher": "sonnet",
+    "gsd-research-synthesizer": "sonnet",
+    "gsd-debugger": "inherit"
+  },
+  "commit_docs": true,
+  "search_gitignored": false,
+  "branching_strategy": "none",
+  "research": true,
+  "plan_checker": true,
+  "verifier": true,
+  "parallelization": true
+}
