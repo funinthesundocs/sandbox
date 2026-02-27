@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T05:11:37.983Z"
+last_updated: "2026-02-27T05:19:35.805Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 12
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 02-scraping-pipeline-4-hours — Plan 02/7 complete
-- **Status**: Executing Phase 2. Plans 02-01 and 02-02 complete. Scraper core library (02-01) and YouTube API client (02-02) shipped.
-- **Last session**: 2026-02-27T05:12:00Z
-- **Stopped at**: Completed 02-01-PLAN.md (scraper core library — temp-files, error-codes, video-utils, youtube-downloader, transcript-extractor, vtt-parser)
+- **Phase**: 02-scraping-pipeline-4-hours — Plan 03/7 complete
+- **Status**: Executing Phase 2. Plans 02-01, 02-02, and 02-03 complete. Scraper library, YouTube API client, and BullMQ worker handler + 5 API routes shipped.
+- **Last session**: 2026-02-27T05:18:02Z
+- **Stopped at**: Completed 02-03-PLAN.md (scrape worker handler, API routes: single, preview, batch, channel browse)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -54,6 +54,10 @@ progress:
 - [Phase 02-02]: All youtube-api files use youtubeGet() wrapper — zero direct fetch() calls, zero process.env
 - [Phase 02-scraping-pipeline-4-hours]: cleanTempDir placed in worker handler caller (Plan 03), not inside scraper library — library functions are pure utilities, cleanup is caller responsibility
 - [Phase 02-scraping-pipeline-4-hours]: extractSubtitles is non-fatal: catches all errors and returns null — subtitle failure must never abort a scrape job
+- [Phase 02-03]: ArrayBuffer converted via Uint8Array for Buffer.from() strict TS compat in scrape handler
+- [Phase 02-03]: tsconfig.worker.json: added lib ES2022 and jsx:react, excluded provider.tsx to support React lib files in worker compilation scope
+- [Phase 02-03]: youtube-api/client.ts @/ alias changed to relative import for worker tsconfig compatibility
+- [Phase 02-03]: Batch scrape route uses sequential for-loop (not Promise.all) for DB inserts to avoid race conditions on duplicate detection
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
@@ -65,6 +69,7 @@ progress:
 | 01-foundation-4-hours | 05 | 6min | 2 | 7 |
 | 02-scraping-pipeline-4-hours | 01 | 2min | 2 | 6 |
 | 02-scraping-pipeline-4-hours | 02 | 2min | 2 | 4 |
+| 02-scraping-pipeline-4-hours | 03 | 4min | 2 | 9 |
 
 ## Blockers
 None.
