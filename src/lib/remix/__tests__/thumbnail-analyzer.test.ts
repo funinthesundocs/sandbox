@@ -1,4 +1,5 @@
 import { analyzeThumbnail } from '../thumbnail-analyzer';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Mock @google/generative-ai
 jest.mock('@google/generative-ai', () => ({
@@ -12,6 +13,8 @@ jest.mock('@google/generative-ai', () => ({
     }),
   })),
 }));
+
+const MockGoogleGenerativeAI = GoogleGenerativeAI as jest.Mock;
 
 // Mock getServerConfig
 jest.mock('../../remix-engine/config', () => ({
@@ -72,8 +75,7 @@ describe('analyzeThumbnail', () => {
       arrayBuffer: async () => fakeBuffer.buffer,
     });
 
-    const { GoogleGenerativeAI } = require('@google/generative-ai');
-    GoogleGenerativeAI.mockImplementationOnce(() => ({
+    MockGoogleGenerativeAI.mockImplementationOnce(() => ({
       getGenerativeModel: jest.fn().mockReturnValue({
         generateContent: jest.fn().mockRejectedValueOnce(new Error('Gemini API error')),
       }),
