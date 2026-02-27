@@ -1,26 +1,215 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Tailwind v4 dark mode — next-themes sets .dark class on <html> */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   shadcn/ui base variables (oklch — shadcn v3 default)
+   ============================================================ */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* ============================================================
+     RemixEngine --re-* design tokens
+     Source of truth: design-system/MASTER.md
+     All values use HSL — NO hardcoded hex colors
+     ============================================================ */
+
+  /* Background Colors */
+  --re-bg-primary: hsl(240 10% 3.9%);
+  --re-bg-secondary: hsl(240 5% 8%);
+  --re-bg-sidebar: hsl(240 6% 6%);
+  --re-bg-hover: hsl(240 5% 12%);
+  --re-bg-active: hsl(240 5% 15%);
+  --re-bg-input: hsl(240 5% 10%);
+  --re-bg-tooltip: hsl(240 8% 18%);
+
+  /* Accent Colors */
+  --re-accent-primary: hsl(217 91% 60%);
+  --re-accent-secondary: hsl(217 91% 50%);
+  --re-accent-primary-subtle: hsl(217 91% 60% / 0.12);
+  --re-accent-primary-border: hsl(217 91% 60% / 0.35);
+
+  /* Text Colors */
+  --re-text-primary: hsl(0 0% 98%);
+  --re-text-secondary: hsl(240 5% 84%);
+  --re-text-muted: hsl(240 5% 64.9%);
+  --re-text-disabled: hsl(240 5% 40%);
+  --re-text-inverse: hsl(240 10% 4%);
+
+  /* Border Colors */
+  --re-border: hsl(240 3.7% 15.9%);
+  --re-border-subtle: hsl(240 3.7% 12%);
+  --re-border-strong: hsl(240 3.7% 20%);
+
+  /* Semantic / Status Colors */
+  --re-destructive: hsl(0 72% 51%);
+  --re-destructive-foreground: hsl(0 0% 98%);
+  --re-success: hsl(142 71% 45%);
+  --re-warning: hsl(38 92% 50%);
+  --re-info: hsl(217 91% 60%);
+
+  /* Spacing & Sizing */
+  --re-sidebar-width: 240px;
+  --re-sidebar-width-collapsed: 64px;
+  --re-header-height: 56px;
+  --re-panel-padding: 1.5rem;
+  --re-nav-item-height: 36px;
+  --re-input-height: 36px;
+  --re-border-radius: 6px;
+  --re-border-radius-sm: 4px;
+  --re-border-radius-lg: 10px;
+
+  /* Typography */
+  --re-font-sans: var(--font-geist-sans, Inter, system-ui, sans-serif);
+  --re-font-mono: var(--font-geist-mono, "Fira Code", monospace);
+  --re-text-xs: 0.75rem;
+  --re-text-sm: 0.875rem;
+  --re-text-base: 1rem;
+  --re-text-lg: 1.125rem;
+  --re-text-xl: 1.25rem;
+  --re-text-2xl: 1.5rem;
+  --re-font-normal: 400;
+  --re-font-medium: 500;
+  --re-font-semibold: 600;
+
+  /* Transitions */
+  --re-transition-fast: 150ms ease;
+  --re-transition-base: 200ms ease;
+  --re-transition-slow: 300ms ease;
+
+  /* Shadows */
+  --re-shadow-sm: 0 1px 2px hsl(240 10% 2% / 0.5);
+  --re-shadow-md: 0 4px 12px hsl(240 10% 2% / 0.6);
+  --re-shadow-lg: 0 8px 24px hsl(240 10% 2% / 0.7);
 }
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ============================================================
+   @theme inline — map --re-* tokens to Tailwind color utilities
+   Enables: bg-re-bg-primary, text-re-accent-primary, etc.
+   shadcn/ui vars are already mapped via @import "shadcn/tailwind.css"
+   ============================================================ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Font mappings */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* RemixEngine --re-* color mappings */
+  --color-re-bg-primary: var(--re-bg-primary);
+  --color-re-bg-secondary: var(--re-bg-secondary);
+  --color-re-bg-sidebar: var(--re-bg-sidebar);
+  --color-re-bg-hover: var(--re-bg-hover);
+  --color-re-bg-active: var(--re-bg-active);
+  --color-re-bg-input: var(--re-bg-input);
+  --color-re-bg-tooltip: var(--re-bg-tooltip);
+  --color-re-accent-primary: var(--re-accent-primary);
+  --color-re-accent-secondary: var(--re-accent-secondary);
+  --color-re-text-primary: var(--re-text-primary);
+  --color-re-text-secondary: var(--re-text-secondary);
+  --color-re-text-muted: var(--re-text-muted);
+  --color-re-text-disabled: var(--re-text-disabled);
+  --color-re-text-inverse: var(--re-text-inverse);
+  --color-re-border: var(--re-border);
+  --color-re-border-subtle: var(--re-border-subtle);
+  --color-re-border-strong: var(--re-border-strong);
+  --color-re-destructive: var(--re-destructive);
+  --color-re-success: var(--re-success);
+  --color-re-warning: var(--re-warning);
+  --color-re-info: var(--re-info);
+
+  /* Border radius mappings */
+  --radius-sm: var(--re-border-radius-sm);
+  --radius-md: var(--re-border-radius);
+  --radius-lg: var(--re-border-radius-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ============================================================
+   Base styles — dark SaaS dashboard defaults
+   ============================================================ */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--re-bg-primary);
+  color: var(--re-text-primary);
+  font-family: var(--re-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
