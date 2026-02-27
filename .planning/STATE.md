@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T05:19:35.805Z"
+last_updated: "2026-02-27T05:26:16.210Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 12
-  completed_plans: 8
+  completed_plans: 10
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 02-scraping-pipeline-4-hours — Plan 03/7 complete
-- **Status**: Executing Phase 2. Plans 02-01, 02-02, and 02-03 complete. Scraper library, YouTube API client, and BullMQ worker handler + 5 API routes shipped.
-- **Last session**: 2026-02-27T05:18:02Z
-- **Stopped at**: Completed 02-03-PLAN.md (scrape worker handler, API routes: single, preview, batch, channel browse)
+- **Phase**: 02-scraping-pipeline-4-hours — Plan 06/7 complete
+- **Status**: Executing Phase 2. Plans 02-01 through 02-06 complete. Scraper library, YouTube API client, BullMQ worker handler, API routes, scrape UI components, and channel batch scraping UI shipped.
+- **Last session**: 2026-02-27T05:25:00Z
+- **Stopped at**: Completed 02-06-PLAN.md (ChannelBrowser, ChannelVideoGrid, BatchQueueList, channel page)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -58,6 +58,10 @@ progress:
 - [Phase 02-03]: tsconfig.worker.json: added lib ES2022 and jsx:react, excluded provider.tsx to support React lib files in worker compilation scope
 - [Phase 02-03]: youtube-api/client.ts @/ alias changed to relative import for worker tsconfig compatibility
 - [Phase 02-03]: Batch scrape route uses sequential for-loop (not Promise.all) for DB inserts to avoid race conditions on duplicate detection
+- [Phase 02-04]: bg-black/70 on video duration overlay badge is intentional — standard video player overlay convention, not a --re-* token violation
+- [Phase 02-04]: formatDuration duplicated in VideoCard and ScrapePreviewCard — tiny helper, acceptable duplication vs coupling
+- [Phase 02-scraping-pipeline-4-hours]: QueueItem type exported from BatchQueueList — ChannelBrowser imports it for shared type
+- [Phase 02-scraping-pipeline-4-hours]: Duplicate batch API responses shown as complete (100%) items in queue view
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
@@ -70,6 +74,8 @@ progress:
 | 02-scraping-pipeline-4-hours | 01 | 2min | 2 | 6 |
 | 02-scraping-pipeline-4-hours | 02 | 2min | 2 | 4 |
 | 02-scraping-pipeline-4-hours | 03 | 4min | 2 | 9 |
+| 02-scraping-pipeline-4-hours | 04 | 4min | 2 | 7 |
+| 02-scraping-pipeline-4-hours | 06 | 3min | 2 | 5 |
 
 ## Blockers
 None.
