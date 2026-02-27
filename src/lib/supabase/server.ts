@@ -1,12 +1,18 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+// src/lib/supabase/server.ts
+// Server Supabase client — reads from RemixEngine config, NOT process.env.
+// Use this in Server Components, API routes, and server actions.
+
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { getServerConfig } from '../remix-engine/config';
 
 export async function createClient() {
   const cookieStore = await cookies();
+  const config = getServerConfig();
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    config.supabase.url,
+    config.supabase.anonKey,
     {
       cookies: {
         getAll() {
@@ -19,7 +25,7 @@ export async function createClient() {
             );
           } catch {
             // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing sessions.
+            // This can be ignored if middleware refreshes sessions.
           }
         },
       },
