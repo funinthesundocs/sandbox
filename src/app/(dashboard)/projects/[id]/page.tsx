@@ -1,8 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import { ScrapeInput } from '@/components/scraper/ScrapeInput';
-import { VideoGrid } from '@/components/scraper/VideoGrid';
+import { ProjectDetailClient } from './ProjectDetailClient';
 
 export default async function ProjectDetailPage({
   params,
@@ -44,23 +42,17 @@ export default async function ProjectDetailPage({
           {project.name}
         </h1>
         {project.description && (
-          <p className="text-[--re-text-muted] text-sm mt-1">{project.description}</p>
+          <p className="text-[--re-text-muted] text-sm mt-1">
+            {project.description}
+          </p>
         )}
       </div>
 
-      {/* Scrape entry points */}
-      <div className="mb-8 flex items-center gap-3 flex-wrap">
-        <ScrapeInput projectId={id} />
-        <Link
-          href={`/dashboard/projects/${id}/channel`}
-          className="inline-flex items-center h-9 px-3 rounded-[--re-border-radius] bg-[--re-bg-secondary] border border-[--re-border] text-[--re-text-secondary] text-sm font-medium hover:bg-[--re-bg-hover] hover:text-[--re-text-primary] transition-colors flex-shrink-0"
-        >
-          Scrape from Channel
-        </Link>
-      </div>
-
-      {/* Video library */}
-      <VideoGrid videos={videos ?? []} projectId={id} />
+      <ProjectDetailClient
+        projectId={id}
+        projectName={project.name}
+        initialVideos={videos ?? []}
+      />
     </div>
   );
 }
