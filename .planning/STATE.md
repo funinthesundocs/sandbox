@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T02:58:22Z"
+last_updated: "2026-02-27T03:06:49.096Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
+  completed_plans: 5
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 01-foundation-4-hours — Plan 02/5 complete
-- **Status**: Executing Phase 1. Plans 01-01 (Module Boundary) and 01-02 (Design System) complete.
-- **Last session**: 2026-02-27T02:58:22Z
-- **Stopped at**: Completed 01-02-PLAN.md (UUPM design system + globals.css + shadcn/ui)
+- **Phase**: 01-foundation-4-hours — Plan 05/5 complete
+- **Status**: Executing Phase 1. Plans 01-01 through 01-05 complete. Wave 2 (Plans 03, 04, 05) complete.
+- **Last session**: 2026-02-27T03:09:00Z
+- **Stopped at**: Completed 01-05-PLAN.md (auth flow — middleware, login, signup, invite API, health route)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -38,12 +38,16 @@ progress:
 - [Phase 01-02]: shadcn/ui v3 uses oklch color space; --re-* tokens use HSL — both coexist in globals.css without conflict
 - [Phase 01-02]: @theme inline maps only --re-* tokens; shadcn base colors handled via @import "shadcn/tailwind.css"
 - [Phase 01-02]: Dark mode is always-on via .dark class on <html>; no light mode designed or supported
+- [Phase 01-foundation-4-hours]: Middleware reads process.env directly — documented exception to the no-process.env rule (Edge Runtime cannot use getServerConfig())
+- [Phase 01-foundation-4-hours]: Invite flow uses verifyOtp(token_hash, type:'invite') then updateUser — Supabase recommended pattern for invite link tokens
+- [Phase 01-foundation-4-hours]: window.location.href used for post-auth redirect (not router.push) to ensure middleware cookie refresh fires on next request
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 01-foundation-4-hours | 01 | 4min | 2 | 13 |
 | 01-foundation-4-hours | 02 | 4min | 2 | 12 |
+| 01-foundation-4-hours | 05 | 6min | 2 | 7 |
 
 ## Blockers
 None.
