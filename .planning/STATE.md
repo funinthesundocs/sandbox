@@ -16,9 +16,9 @@ progress:
 ## Current Position
 - **Milestone**: 1 (MVP)
 - **Phase**: 02-scraping-pipeline-4-hours — Plan 02/7 complete
-- **Status**: Executing Phase 2. Plans 02-01 and 02-02 complete. YouTube API client library shipped.
-- **Last session**: 2026-02-27T05:10:13Z
-- **Stopped at**: Completed 02-02-PLAN.md (YouTube API client — URL parser, metadata fetch, channel search)
+- **Status**: Executing Phase 2. Plans 02-01 and 02-02 complete. Scraper core library (02-01) and YouTube API client (02-02) shipped.
+- **Last session**: 2026-02-27T05:12:00Z
+- **Stopped at**: Completed 02-01-PLAN.md (scraper core library — temp-files, error-codes, video-utils, youtube-downloader, transcript-extractor, vtt-parser)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
