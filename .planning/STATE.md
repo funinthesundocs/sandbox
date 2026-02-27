@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T03:06:49.096Z"
+last_updated: "2026-02-27T03:08:01.318Z"
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
   completed_plans: 5
 ---
@@ -41,13 +41,19 @@ progress:
 - [Phase 01-foundation-4-hours]: Middleware reads process.env directly — documented exception to the no-process.env rule (Edge Runtime cannot use getServerConfig())
 - [Phase 01-foundation-4-hours]: Invite flow uses verifyOtp(token_hash, type:'invite') then updateUser — Supabase recommended pattern for invite link tokens
 - [Phase 01-foundation-4-hours]: window.location.href used for post-auth redirect (not router.push) to ensure middleware cookie refresh fires on next request
+- [Phase 01-foundation-4-hours]: Used spec Section 5 as authoritative schema — richer 12-table schema (not plan's 6-table summary)
+- [Phase 01-foundation-4-hours]: Storage bucket named 'remix-engine' (hyphen) per CLAUDE.md namespace rules
+- [Phase 01-foundation-4-hours]: re_scenes UNIQUE(script_id, scene_number) — unique per script not per video
+- [Phase 01-foundation-4-hours]: types.ts hand-written stub — Docker not available for supabase gen types
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 01-foundation-4-hours | 01 | 4min | 2 | 13 |
 | 01-foundation-4-hours | 02 | 4min | 2 | 12 |
+| 01-foundation-4-hours | 03 | 4min | 2 | 7 |
 | 01-foundation-4-hours | 05 | 6min | 2 | 7 |
+| Phase 01-foundation-4-hours P04 | 4min | 2 tasks | 13 files |
 
 ## Blockers
 None.
