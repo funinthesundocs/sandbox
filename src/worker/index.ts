@@ -12,6 +12,7 @@
 import { Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import { handleScrapeJob } from './handlers/scrape';
+import { handleRemixJob } from './handlers/remix';
 
 const redisConnection = new IORedis(process.env.REDIS_URL ?? 'redis://localhost:6379', {
   maxRetriesPerRequest: null,
@@ -34,6 +35,24 @@ scrapeWorker.on('failed', (job, err) => {
   console.error(`[scrapeWorker] Job ${job?.id} failed:`, err.message);
 });
 
+// ----------------------------------------------------------------
+// Remix worker — handles remix_title, remix_thumbnail, remix_script
+// Concurrency 5: title/script jobs are I/O-bound (Gemini); thumbnail is the bottleneck
+// ----------------------------------------------------------------
+
+const remixWorker = new Worker('remix', handleRemixJob, {
+  connection: redisConnection,
+  concurrency: 5,
+});
+
+remixWorker.on('completed', (job) => {
+  console.log(`[remixWorker] Job ${job.id} (${job.data?.type}) completed for video ${job.data?.videoId}`);
+});
+
+remixWorker.on('failed', (job, err) => {
+  console.error(`[remixWorker] Job ${job?.id} (${job?.data?.type}) failed:`, err.message);
+});
+
 console.log('RemixEngine worker running. Waiting for jobs...');
 
 // ----------------------------------------------------------------
@@ -43,6 +62,7 @@ console.log('RemixEngine worker running. Waiting for jobs...');
 const shutdown = async (signal: string) => {
   console.log(`RemixEngine worker received ${signal}, shutting down gracefully...`);
   await scrapeWorker.close();
+  await remixWorker.close();
   await redisConnection.quit();
   process.exit(0);
 };
