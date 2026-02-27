@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T05:26:16.210Z"
+last_updated: "2026-02-27T05:27:58.187Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 12
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 02-scraping-pipeline-4-hours — Plan 06/7 complete
-- **Status**: Executing Phase 2. Plans 02-01 through 02-06 complete. Scraper library, YouTube API client, BullMQ worker handler, API routes, scrape UI components, and channel batch scraping UI shipped.
-- **Last session**: 2026-02-27T05:25:00Z
-- **Stopped at**: Completed 02-06-PLAN.md (ChannelBrowser, ChannelVideoGrid, BatchQueueList, channel page)
+- **Phase**: 02-scraping-pipeline-4-hours — Plans 02-01 through 02-06 complete (05 now done)
+- **Status**: Executing Phase 2. Plans 02-01 through 02-06 complete. Scraper library, YouTube API client, BullMQ worker handler, API routes, scrape UI components, channel batch scraping UI, video detail page shipped.
+- **Last session**: 2026-02-27T05:26:00Z
+- **Stopped at**: Completed 02-05-PLAN.md (video detail page, VideoPlayer, TranscriptViewer, 4 API routes: video CRUD, transcript save, signed URL)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -62,6 +62,9 @@ progress:
 - [Phase 02-04]: formatDuration duplicated in VideoCard and ScrapePreviewCard — tiny helper, acceptable duplication vs coupling
 - [Phase 02-scraping-pipeline-4-hours]: QueueItem type exported from BatchQueueList — ChannelBrowser imports it for shared type
 - [Phase 02-scraping-pipeline-4-hours]: Duplicate batch API responses shown as complete (100%) items in queue view
+- [Phase 02-05]: VideoDetailLayout client component wraps player + transcript to share seekTo state — avoids prop drilling or context for single-page concern
+- [Phase 02-05]: onPlayerReady callback pattern (not forwardRef) used to expose seekTo — React 19 compatible
+- [Phase 02-05]: Transcript SSR: 5-min signed URL for server-side fetch, separate 1-hour signed URL API for client video playback
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
@@ -76,6 +79,7 @@ progress:
 | 02-scraping-pipeline-4-hours | 03 | 4min | 2 | 9 |
 | 02-scraping-pipeline-4-hours | 04 | 4min | 2 | 7 |
 | 02-scraping-pipeline-4-hours | 06 | 3min | 2 | 5 |
+| Phase 02-scraping-pipeline-4-hours P05 | 4min | 2 tasks | 7 files |
 
 ## Blockers
 None.
