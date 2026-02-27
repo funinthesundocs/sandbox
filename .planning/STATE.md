@@ -2,23 +2,23 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-27T05:40:04.550Z"
+status: in_progress
+last_updated: "2026-02-27T06:30:18Z"
 progress:
-  total_phases: 2
+  total_phases: 3
   completed_phases: 2
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 19
+  completed_plans: 13
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 02-scraping-pipeline-4-hours — ALL 7 PLANS COMPLETE
-- **Status**: Phase 2 complete. All scraping pipeline plans shipped: scraper library, YouTube API client, BullMQ worker handler, API routes, scrape UI, channel batch scraping, video detail page, Realtime progress + auto-nav + header quick-add.
-- **Last session**: 2026-02-27T05:38:00Z
-- **Stopped at**: Completed 02-07-PLAN.md (Realtime progress hook, ScrapeProgressSteps, JobProgressSubscriber, header quick-add modal, cancel endpoint)
+- **Phase**: 03-remix-pipeline-4-hours — Plan 1 of 7 complete
+- **Status**: Phase 3 in progress. Plan 01 complete: Gemini title and script remix libraries with full Zod validation and Jest test infrastructure.
+- **Last session**: 2026-02-27T06:30:18Z
+- **Stopped at**: Completed 03-01-PLAN.md (title-remixer, script-remixer, 9 tests GREEN)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -68,6 +68,10 @@ progress:
 - [Phase 02-07]: useJobProgress uses createClient() from supabase/client.ts directly — RemixEngineConfig has no supabaseClient property; plan description was aspirational
 - [Phase 02-07]: Cancel endpoint uses fire-and-forget for video status update — cancellation is best-effort, job status is authoritative
 - [Phase 02-07]: ScrapeProgressSteps treats cancelled status same as error for step visual state
+- [Phase 03-01]: Gemini model gemini-2.0-flash used for title and script generation — JSON mode support, cost-effective
+- [Phase 03-01]: Two-stage parse pattern (JSON.parse then Zod.parse) gives distinct error types for malformed JSON vs wrong schema
+- [Phase 03-01]: Sequential scene number validation done in application code forEach (not Zod) — cross-element ordering requires imperative logic
+- [Phase 03-01]: Jest + ts-jest (already in devDependencies) needed only jest.config.js and test script to activate
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
@@ -84,6 +88,7 @@ progress:
 | 02-scraping-pipeline-4-hours | 06 | 3min | 2 | 5 |
 | 02-scraping-pipeline-4-hours | 05 | 4min | 2 | 7 |
 | 02-scraping-pipeline-4-hours | 07 | 8min | 2 | 8 |
+| 03-remix-pipeline-4-hours | 01 | 5min | 2 | 9 |
 
 ## Blockers
 None.
