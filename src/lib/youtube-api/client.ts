@@ -2,7 +2,7 @@
 // Authenticated fetch wrapper for YouTube Data API v3.
 // API key is ALWAYS sourced from getServerConfig() — never process.env.
 
-import { getServerConfig } from '@/lib/remix-engine/config';
+import { getServerConfig } from '../remix-engine/config';
 
 const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 

@@ -4,33 +4,48 @@
  *
  * Start with: npx ts-node -p tsconfig.worker.json src/worker/index.ts
  * Or build: npx tsc -p tsconfig.worker.json && node dist/worker/worker/index.js
+ *
+ * NOTE: process.env is read directly here — documented exception for the worker process.
+ * The worker runs outside Next.js and cannot use getServerConfig() for Redis URL.
  */
 
-// Relative imports only — no @/ aliases in worker code
-// import { scrapeHandler } from './handlers/scrape';
-// import { remixHandler } from './handlers/remix';
-// import { generateHandler } from './handlers/generate';
-// import { renderHandler } from './handlers/render';
+import { Worker } from 'bullmq';
+import IORedis from 'ioredis';
+import { handleScrapeJob } from './handlers/scrape';
 
-async function main() {
-  console.log('RemixEngine worker starting...');
-
-  // Graceful shutdown handler
-  const shutdown = async (signal: string) => {
-    console.log(`RemixEngine worker received ${signal}, shutting down gracefully...`);
-    // TODO: Close BullMQ workers before exiting
-    process.exit(0);
-  };
-
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
-  process.on('SIGINT', () => shutdown('SIGINT'));
-
-  console.log('RemixEngine worker running. Waiting for jobs...');
-}
-
-main().catch((err) => {
-  console.error('Worker startup failed:', err);
-  process.exit(1);
+const redisConnection = new IORedis(process.env.REDIS_URL ?? 'redis://localhost:6379', {
+  maxRetriesPerRequest: null,
 });
 
-export { main };
+// ----------------------------------------------------------------
+// Register workers
+// ----------------------------------------------------------------
+
+const scrapeWorker = new Worker('scrape', handleScrapeJob, {
+  connection: redisConnection,
+  concurrency: 3,
+});
+
+scrapeWorker.on('completed', (job) => {
+  console.log(`[scrapeWorker] Job ${job.id} completed for video ${job.data?.videoId}`);
+});
+
+scrapeWorker.on('failed', (job, err) => {
+  console.error(`[scrapeWorker] Job ${job?.id} failed:`, err.message);
+});
+
+console.log('RemixEngine worker running. Waiting for jobs...');
+
+// ----------------------------------------------------------------
+// Graceful shutdown
+// ----------------------------------------------------------------
+
+const shutdown = async (signal: string) => {
+  console.log(`RemixEngine worker received ${signal}, shutting down gracefully...`);
+  await scrapeWorker.close();
+  await redisConnection.quit();
+  process.exit(0);
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

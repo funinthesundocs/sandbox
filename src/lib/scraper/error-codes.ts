@@ -15,8 +15,11 @@ export class ScrapeError extends Error {
     public readonly userMessage: string,
     cause?: unknown
   ) {
-    super(userMessage, { cause });
+    super(userMessage);
     this.name = 'ScrapeError';
+    if (cause !== undefined) {
+      (this as unknown as { cause: unknown }).cause = cause;
+    }
   }
 }
 
