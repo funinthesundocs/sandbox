@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T05:27:58.187Z"
+last_updated: "2026-02-27T05:38:00Z"
 progress:
   total_phases: 2
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 12
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 02-scraping-pipeline-4-hours — Plans 02-01 through 02-06 complete (05 now done)
-- **Status**: Executing Phase 2. Plans 02-01 through 02-06 complete. Scraper library, YouTube API client, BullMQ worker handler, API routes, scrape UI components, channel batch scraping UI, video detail page shipped.
-- **Last session**: 2026-02-27T05:26:00Z
-- **Stopped at**: Completed 02-05-PLAN.md (video detail page, VideoPlayer, TranscriptViewer, 4 API routes: video CRUD, transcript save, signed URL)
+- **Phase**: 02-scraping-pipeline-4-hours — ALL 7 PLANS COMPLETE
+- **Status**: Phase 2 complete. All scraping pipeline plans shipped: scraper library, YouTube API client, BullMQ worker handler, API routes, scrape UI, channel batch scraping, video detail page, Realtime progress + auto-nav + header quick-add.
+- **Last session**: 2026-02-27T05:38:00Z
+- **Stopped at**: Completed 02-07-PLAN.md (Realtime progress hook, ScrapeProgressSteps, JobProgressSubscriber, header quick-add modal, cancel endpoint)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -65,6 +65,9 @@ progress:
 - [Phase 02-05]: VideoDetailLayout client component wraps player + transcript to share seekTo state — avoids prop drilling or context for single-page concern
 - [Phase 02-05]: onPlayerReady callback pattern (not forwardRef) used to expose seekTo — React 19 compatible
 - [Phase 02-05]: Transcript SSR: 5-min signed URL for server-side fetch, separate 1-hour signed URL API for client video playback
+- [Phase 02-07]: useJobProgress uses createClient() from supabase/client.ts directly — RemixEngineConfig has no supabaseClient property; plan description was aspirational
+- [Phase 02-07]: Cancel endpoint uses fire-and-forget for video status update — cancellation is best-effort, job status is authoritative
+- [Phase 02-07]: ScrapeProgressSteps treats cancelled status same as error for step visual state
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
@@ -79,7 +82,8 @@ progress:
 | 02-scraping-pipeline-4-hours | 03 | 4min | 2 | 9 |
 | 02-scraping-pipeline-4-hours | 04 | 4min | 2 | 7 |
 | 02-scraping-pipeline-4-hours | 06 | 3min | 2 | 5 |
-| Phase 02-scraping-pipeline-4-hours P05 | 4min | 2 tasks | 7 files |
+| 02-scraping-pipeline-4-hours | 05 | 4min | 2 | 7 |
+| 02-scraping-pipeline-4-hours | 07 | 8min | 2 | 8 |
 
 ## Blockers
 None.
