@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T06:56:05.242Z"
+last_updated: "2026-02-27T07:06:33.999Z"
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 03-remix-pipeline-4-hours — Plans 00, 01, 02, 03, and 04 complete
-- **Status**: Phase 3 in progress. Plans 00-04 complete: Wave 0 test scaffold, Gemini title/script remix libraries, fal.ai FLUX thumbnail generator, 5 remix API routes + worker handler (13 tests GREEN), PipelineTabs + StartRemixButton + remix review page shell.
-- **Last session**: 2026-02-27T06:54:50Z
-- **Stopped at**: Completed 03-04-PLAN.md (PipelineTabs, StartRemixButton, remix review page shell)
+- **Phase**: 03-remix-pipeline-4-hours — ALL 6 plans (00-05) complete
+- **Status**: Phase 3 complete. All 6 plans done: Wave 0 test scaffold, Gemini title/script remix libraries, fal.ai FLUX thumbnail generator, 5 remix API routes + worker handler (9 test suites, 38 tests GREEN), PipelineTabs + StartRemixButton + remix review page shell, full Remix Review interactive UI (TitleGrid, ThumbnailCards, SceneEditor, ApprovalGate, RemixReviewPage, approve endpoint).
+- **Last session**: 2026-02-27T07:04:37Z
+- **Stopped at**: Completed 03-05-PLAN.md (Remix Review interactive UI — full user-facing review + approval gate)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -83,6 +83,9 @@ progress:
 - [Phase 03-remix-pipeline-4-hours]: supabaseAdmin used in remix/page.tsx server component for cross-table reads — consistent with existing video detail page pattern
 - [Phase 03-remix-pipeline-4-hours]: Promise.allSettled for parallel remix endpoint calls — navigate to review regardless of individual failures; partial results shown
 - [Phase 03-remix-pipeline-4-hours]: var(--re-bg-secondary) used for remix data card (not var(--re-bg-card)) — bg-card token absent from MASTER.md; bg-secondary is the correct Card background token
+- [Phase 03-remix-pipeline-4-hours]: Approve endpoint validates is_selected=true presence — no new DB column; selections are the generation tab unlock signal
+- [Phase 03-remix-pipeline-4-hours]: storagePath/table helpers extracted to server-helpers.ts — hooks.ts uses createContext which breaks Turbopack when imported in API routes
+- [Phase 03-remix-pipeline-4-hours]: globals.css @theme inline requires --color-border/ring/background/foreground for Tailwind v4 @apply border-border to work
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
@@ -104,6 +107,7 @@ progress:
 | 03-remix-pipeline-4-hours | 02 | 7min | 2 | 6 |
 | Phase 03-remix-pipeline-4-hours P03 | 9min | 2 tasks | 8 files |
 | Phase 03-remix-pipeline-4-hours P04 | 4min | 2 tasks | 4 files |
+| Phase 03-remix-pipeline-4-hours P05 | 7min | 2 tasks | 13 files |
 
 ## Blockers
 None.
@@ -116,6 +120,7 @@ None.
 - `src/lib/remix-engine/config.ts` — RemixEngineConfig type, createStandaloneConfig(), getServerConfig(), setServerConfig()
 - `src/lib/remix-engine/provider.tsx` — RemixEngineProvider React context
 - `src/lib/remix-engine/hooks.ts` — useRemixEngine(), table(), storagePath(), RemixEngineContext
+- `src/lib/remix-engine/server-helpers.ts` — Server-only storagePath(), table() without React import (safe for API routes)
 - `design-system/MASTER.md` — UUPM design token reference (read before building any UI)
 - `src/app/globals.css` — Tailwind v4 with @custom-variant dark, all --re-* tokens, @theme inline
 - `src/components/ui/` — shadcn/ui components (button, input, label, dropdown-menu, tooltip, avatar, separator)
