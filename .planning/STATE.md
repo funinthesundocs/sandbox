@@ -3,23 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T06:49:39.770Z"
+last_updated: "2026-02-27T06:56:05.242Z"
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 18
-  completed_plans: 16
-  note: "plan 03-03 counted in completed_plans:16 (was 15+1)"
+  completed_plans: 17
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 03-remix-pipeline-4-hours — Plans 00, 01, 02, and 03 complete
-- **Status**: Phase 3 in progress. Plans 00-03 complete: Wave 0 test scaffold, Gemini title/script remix libraries, fal.ai FLUX thumbnail generator, 5 remix API routes + worker handler (13 tests GREEN).
-- **Last session**: 2026-02-27T06:47:04Z
-- **Stopped at**: Completed 03-03-PLAN.md (5 remix API routes, worker handler with fire-and-forget DB, 13 tests GREEN)
+- **Phase**: 03-remix-pipeline-4-hours — Plans 00, 01, 02, 03, and 04 complete
+- **Status**: Phase 3 in progress. Plans 00-04 complete: Wave 0 test scaffold, Gemini title/script remix libraries, fal.ai FLUX thumbnail generator, 5 remix API routes + worker handler (13 tests GREEN), PipelineTabs + StartRemixButton + remix review page shell.
+- **Last session**: 2026-02-27T06:54:50Z
+- **Stopped at**: Completed 03-04-PLAN.md (PipelineTabs, StartRemixButton, remix review page shell)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -81,6 +80,9 @@ progress:
 - [Phase 03-remix-pipeline-4-hours]: fire-and-forget pattern for Supabase update/delete chains — Wave 0 test mock then:mockResolvedValue doesn't call resolve callback; fireQuery(PromiseLike) wraps to Promise.resolve().catch()
 - [Phase 03-remix-pipeline-4-hours]: Broad UUID regex (not z.string().uuid()) in API routes — Zod v4 strict RFC version bits reject all-letter test UUIDs like aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
 - [Phase 03-remix-pipeline-4-hours]: Jest projects config — node env for API/worker tests (need Web Fetch API), jsdom for component tests; replaces single global testEnvironment
+- [Phase 03-remix-pipeline-4-hours]: supabaseAdmin used in remix/page.tsx server component for cross-table reads — consistent with existing video detail page pattern
+- [Phase 03-remix-pipeline-4-hours]: Promise.allSettled for parallel remix endpoint calls — navigate to review regardless of individual failures; partial results shown
+- [Phase 03-remix-pipeline-4-hours]: var(--re-bg-secondary) used for remix data card (not var(--re-bg-card)) — bg-card token absent from MASTER.md; bg-secondary is the correct Card background token
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
@@ -101,6 +103,7 @@ progress:
 | 03-remix-pipeline-4-hours | 01 | 5min | 2 | 9 |
 | 03-remix-pipeline-4-hours | 02 | 7min | 2 | 6 |
 | Phase 03-remix-pipeline-4-hours P03 | 9min | 2 tasks | 8 files |
+| Phase 03-remix-pipeline-4-hours P04 | 4min | 2 tasks | 4 files |
 
 ## Blockers
 None.
