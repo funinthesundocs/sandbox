@@ -3,22 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T03:12:19.119Z"
+last_updated: "2026-02-27T05:11:37.983Z"
 progress:
-  total_phases: 1
+  total_phases: 2
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 12
+  completed_plans: 7
 ---
 
 # State
 
 ## Current Position
 - **Milestone**: 1 (MVP)
-- **Phase**: 01-foundation-4-hours — Plan 05/5 complete
-- **Status**: Executing Phase 1. Plans 01-01 through 01-05 complete. Wave 2 (Plans 03, 04, 05) complete.
-- **Last session**: 2026-02-27T03:09:00Z
-- **Stopped at**: Completed 01-05-PLAN.md (auth flow — middleware, login, signup, invite API, health route)
+- **Phase**: 02-scraping-pipeline-4-hours — Plan 02/7 complete
+- **Status**: Executing Phase 2. Plans 02-01 and 02-02 complete. YouTube API client library shipped.
+- **Last session**: 2026-02-27T05:10:13Z
+- **Stopped at**: Completed 02-02-PLAN.md (YouTube API client — URL parser, metadata fetch, channel search)
 
 ## Decisions
 - Dual-mode architecture: standalone + module from single codebase
@@ -48,6 +48,12 @@ progress:
 - [Phase 01-foundation-4-hours]: Providers pattern: root layout (server) delegates to Providers client component for RemixEngineProvider + ThemeProvider composition
 - [Phase 01-foundation-4-hours]: suppressHydrationWarning on html element required with next-themes to prevent SSR mismatch on class attribute
 - [Phase 01-foundation-4-hours]: Sidebar uses inline style for CSS variable widths — routePrefix is for API routes, UI nav uses hardcoded /dashboard/* paths
+- [Phase 02-02]: durationSeconds is null in ChannelVideo — search.list does not return contentDetails; callers must fetch metadata separately if durations needed
+- [Phase 02-02]: resolveChannelId returns input directly for UC-prefixed IDs to avoid unnecessary API round-trip
+- [Phase 02-02]: parseIsoDuration returns 0 for unrecognized formats (e.g. P0D) — safe fallback with no throw
+- [Phase 02-02]: All youtube-api files use youtubeGet() wrapper — zero direct fetch() calls, zero process.env
+- [Phase 02-scraping-pipeline-4-hours]: cleanTempDir placed in worker handler caller (Plan 03), not inside scraper library — library functions are pure utilities, cleanup is caller responsibility
+- [Phase 02-scraping-pipeline-4-hours]: extractSubtitles is non-fatal: catches all errors and returns null — subtitle failure must never abort a scrape job
 
 ## Performance Metrics
 | Phase | Plan | Duration | Tasks | Files |
@@ -57,6 +63,8 @@ progress:
 | 01-foundation-4-hours | 03 | 4min | 2 | 7 |
 | 01-foundation-4-hours | 04 | 4min | 2 | 13 |
 | 01-foundation-4-hours | 05 | 6min | 2 | 7 |
+| 02-scraping-pipeline-4-hours | 01 | 2min | 2 | 6 |
+| 02-scraping-pipeline-4-hours | 02 | 2min | 2 | 4 |
 
 ## Blockers
 None.
