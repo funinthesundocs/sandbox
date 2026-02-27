@@ -4,7 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
-import { storagePath } from '@/lib/remix-engine/hooks';
+import { storagePath } from '@/lib/remix-engine/server-helpers';
 
 interface TranscriptSegment {
   timestamp: string;

@@ -51,6 +51,7 @@ const config = {
       ],
       moduleNameMapper: sharedModuleNameMapper,
       transform: sharedTransform,
+      setupFilesAfterEnv: ['<rootDir>/src/jest.setup.ts'],
     },
   ],
 };

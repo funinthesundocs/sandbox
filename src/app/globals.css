@@ -187,6 +187,12 @@
   --color-re-warning: var(--re-warning);
   --color-re-info: var(--re-info);
 
+  /* shadcn base color utility mappings (required for @apply border-border, outline-ring, etc.) */
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
   /* Border radius mappings */
   --radius-sm: var(--re-border-radius-sm);
   --radius-md: var(--re-border-radius);

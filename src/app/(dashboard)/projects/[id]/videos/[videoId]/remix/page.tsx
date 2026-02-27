@@ -6,6 +6,7 @@ import { redirect, notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { PipelineTabs } from '@/components/remix/PipelineTabs';
+import { RemixReviewPage as RemixReviewPageClient } from '@/components/remix/RemixReviewPage';
 import { ChevronLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -123,22 +124,15 @@ export default async function RemixReviewPage({
         </div>
       )}
 
-      {/* Data loaded state — placeholder until Plan 05 adds RemixReviewPage client component */}
+      {/* Full interactive review UI */}
       {video.remix_status === 'complete' && (
-        <div className="space-y-4">
-          <div
-            className="text-sm px-3 py-2 rounded"
-            style={{
-              background: 'var(--re-bg-secondary)',
-              color: 'var(--re-text-secondary)',
-            }}
-          >
-            Remix data loaded: {titles.length} titles &middot;{' '}
-            {thumbnailsWithUrls.length} thumbnails &middot; {scenes.length}{' '}
-            scenes
-          </div>
-          {/* TODO: RemixReviewPage client component inserted here by Plan 05 */}
-        </div>
+        <RemixReviewPageClient
+          videoId={videoId}
+          projectId={projectId}
+          titles={titles}
+          thumbnails={thumbnailsWithUrls}
+          scenes={scenes as Array<{ id: string; scene_number: number; dialogue_line: string; duration_seconds: number; broll_description: string }>}
+        />
       )}
 
       {/* Error state */}
