@@ -3,11 +3,13 @@
 
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, Wand2, RefreshCw, Download, Trash2 } from 'lucide-react';
+import { ChevronLeft, RefreshCw, Download, Trash2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { Button } from '@/components/ui/button';
 import { VideoDetailLayout } from '@/components/scraper/VideoDetailLayout';
+import { PipelineTabs } from '@/components/remix/PipelineTabs';
+import { StartRemixButton } from '@/components/remix/StartRemixButton';
 
 // --- Helpers ---
 
@@ -135,10 +137,12 @@ export default async function VideoDetailPage({
 
         {/* Action buttons */}
         <div className="flex gap-2 flex-shrink-0">
-          <Button variant="default" size="sm" disabled>
-            <Wand2 className="w-4 h-4 mr-1" />
-            Start Remix
-          </Button>
+          <StartRemixButton
+            videoId={videoId}
+            projectId={projectId}
+            scrapeStatus={video.scrape_status}
+            remixStatus={video.remix_status}
+          />
           <Button variant="outline" size="sm">
             <RefreshCw className="w-4 h-4 mr-1" />
             Re-scrape
@@ -157,6 +161,16 @@ export default async function VideoDetailPage({
           </Button>
         </div>
       </div>
+
+      {/* Pipeline tab navigation */}
+      <PipelineTabs
+        projectId={projectId}
+        videoId={videoId}
+        scrapeStatus={video.scrape_status}
+        remixStatus={video.remix_status}
+        generationStatus={video.generation_status}
+        activeTab="scraping"
+      />
 
       {/* Responsive grid: player + transcript (managed by client layout component) */}
       <VideoDetailLayout
