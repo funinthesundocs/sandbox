@@ -1,6 +1,7 @@
 # Phase 1: Foundation - Context
 
 **Gathered:** 2026-02-26
+**Updated:** 2026-02-26
 **Status:** Ready for planning
 
 <domain>
@@ -27,6 +28,18 @@ Project scaffold with Next.js App Router + TypeScript + Tailwind, Supabase schem
 - Header bar contains: page title (left) + user avatar with dropdown menu (right)
 - Avatar dropdown: profile info, logout
 - No breadcrumbs in Phase 1
+
+### Auth Flow
+- Invite-only: only admins can send invites, via the Admin panel
+- Invite mechanism: Supabase auth invite email → one-time signup link with token in URL
+- `/signup` without a valid invite token → redirect to `/login` with "Invite required" message
+- Signup form only renders/works when a valid invite token is present in the URL
+- After successful login → redirect to `/dashboard`
+- Role enforcement in nav: hide restricted items rather than show-and-block
+  - Viewer: sees Projects, Analytics only
+  - Editor: sees Projects, Queue, Analytics
+  - Admin: sees all nav including Admin section
+- Role stored in Supabase user metadata, checked by middleware on every route
 
 ### Module Boundary
 - Sidebar, Header, auth pages only render when `config.mode === 'standalone'`
