@@ -35,7 +35,7 @@ export default function LoginPage() {
     }
 
     // Hard redirect so the middleware cookie refresh runs on the next request.
-    window.location.href = '/dashboard';
+    window.location.href = '/projects';
   }
 
   return (

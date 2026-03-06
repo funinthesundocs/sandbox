@@ -42,6 +42,7 @@ export const USER_FACING_ERRORS: Record<ScrapeErrorCode, string> = {
 export function mapYtDlpError(error: unknown): ScrapeError {
   const message =
     error instanceof Error ? error.message : String(error);
+  console.error('[yt-dlp raw error]', message);
   const code = (error as { code?: string })?.code;
 
   if (/private video/i.test(message)) {

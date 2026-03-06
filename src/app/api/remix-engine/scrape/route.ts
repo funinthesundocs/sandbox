@@ -78,12 +78,12 @@ export async function POST(request: NextRequest) {
       youtube_url: youtubeUrl,
       youtube_id: youtubeId,
       scrape_status: 'pending',
-      created_by: user.id,
     });
 
   if (videoInsertError) {
+    console.error('[scrape] videoInsertError:', videoInsertError);
     return NextResponse.json(
-      { error: 'Failed to create video record' },
+      { error: 'Failed to create video record', detail: videoInsertError.message },
       { status: 500 }
     );
   }

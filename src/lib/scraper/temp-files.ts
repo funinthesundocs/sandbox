@@ -1,7 +1,8 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 
-const TEMP_BASE = '/tmp/remixengine';
+const TEMP_BASE = path.join(os.tmpdir(), 'remixengine');
 
 /**
  * Returns the temp directory path for a given videoId.

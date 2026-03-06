@@ -34,18 +34,20 @@ export async function downloadYouTubeVideo(
     const outputTemplate = path.join(getTempDir(videoId), '%(id)s.%(ext)s');
     const cmd = [
       'yt-dlp',
-      '-f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best"',
-      '--merge-output-format mp4',
+      // iOS client: delivers pre-merged MP4s — no ffmpeg or JS runtime required
+      '--extractor-args "youtube:player_client=ios"',
+      '-f "best[height<=1080][ext=mp4]/best[ext=mp4]/best"',
       `--output "${outputTemplate}"`,
       '--socket-timeout 30',
       '--no-playlist',
       `"${youtubeUrl}"`,
     ].join(' ');
 
-    await execAsync(cmd, {
+    const { stderr } = await execAsync(cmd, {
       timeout: DOWNLOAD_TIMEOUT_MS,
       maxBuffer: 10 * 1024 * 1024,
     });
+    if (stderr) console.warn('[yt-dlp stderr]', stderr);
 
     // Find the downloaded .mp4 file
     const dir = getTempDir(videoId);

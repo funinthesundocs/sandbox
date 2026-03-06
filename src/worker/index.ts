@@ -16,6 +16,8 @@ import { handleRemixJob } from './handlers/remix';
 
 const redisConnection = new IORedis(process.env.REDIS_URL ?? 'redis://localhost:6379', {
   maxRetriesPerRequest: null,
+  keepAlive: 5000,                          // Send TCP keepalive every 5s — prevents WSL2 idle connection drops
+  retryStrategy: (times) => Math.min(times * 200, 5000), // Fast reconnect: 200ms, 400ms … cap 5s
 });
 
 // ----------------------------------------------------------------
