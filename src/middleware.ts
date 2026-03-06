@@ -37,22 +37,25 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isDashboardRoute = request.nextUrl.pathname.startsWith('/dashboard');
+  const protectedPrefixes = ['/projects', '/queue', '/admin', '/settings'];
+  const isProtectedRoute = protectedPrefixes.some((p) =>
+    request.nextUrl.pathname.startsWith(p)
+  );
   const isAuthRoute =
     request.nextUrl.pathname.startsWith('/login') ||
     request.nextUrl.pathname.startsWith('/signup');
 
-  // Protect /dashboard/* — unauthenticated users are redirected to /login
-  if (isDashboardRoute && !user) {
+  // Protect app routes — unauthenticated users are redirected to /login
+  if (isProtectedRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-  // Prevent authenticated users from viewing auth pages — redirect to /dashboard
+  // Prevent authenticated users from viewing auth pages — redirect to /projects
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
+    url.pathname = '/projects';
     return NextResponse.redirect(url);
   }
 

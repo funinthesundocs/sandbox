@@ -57,7 +57,7 @@ export function ProjectDetailClient({
         />
         {/* Channel batch scrape entry point */}
         <div className="flex justify-end">
-          <Link href={`/dashboard/projects/${projectId}/channel`}>
+          <Link href={`/projects/${projectId}/channel`}>
             <Button variant="outline" size="sm">
               <Network className="w-4 h-4 mr-2" /> Scrape from Channel
             </Button>

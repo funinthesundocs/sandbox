@@ -1,13 +1,9 @@
 'use client';
 
-// src/components/layout/Header.tsx
-// Application header — page title (derived from route) + quick-add scrape button + user avatar dropdown.
-// Only renders in standalone mode (mode gate enforced in dashboard layout.tsx).
-// React 19 — no forwardRef.
-
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Plus, X } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,8 +13,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { ScrapeInput } from '@/components/scraper/ScrapeInput';
 
 interface HeaderProps {
   user?: {
@@ -27,16 +21,10 @@ interface HeaderProps {
   };
 }
 
-/** Derive a human-readable page title from the current pathname. */
-function getPageTitle(pathname: string): string {
-  const segments = pathname.split('/').filter(Boolean);
-  // Use the last meaningful segment
-  const last = segments[segments.length - 1];
-  if (!last || last === 'dashboard') return 'Dashboard';
-  return last.charAt(0).toUpperCase() + last.slice(1);
+function isUuid(s: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(s);
 }
 
-/** Get avatar initials from name or email. */
 function getInitials(user?: { email?: string; name?: string }): string {
   if (user?.name) {
     const parts = user.name.trim().split(' ');
@@ -47,229 +35,202 @@ function getInitials(user?: { email?: string; name?: string }): string {
   if (user?.email) {
     return user.email.slice(0, 2).toUpperCase();
   }
-  return 'RE';
+  return 'SB';
 }
 
-/** Project selector — fetches user's projects client-side and renders a <select>. */
-function ProjectSelector({
-  onProjectSelected,
-}: {
-  onProjectSelected: (id: string) => void;
-}) {
-  const [projects, setProjects] = useState<{ id: string; name: string }[]>([]);
+interface Crumb {
+  label: string;
+  href?: string;
+}
 
+function useBreadcrumbs(): Crumb[] {
+  const pathname = usePathname();
+  const [resolvedNames, setResolvedNames] = useState<Record<string, string>>({});
+
+  const segments = pathname.split('/').filter(Boolean);
+
+  // Find UUIDs and resolve them to project names
   useEffect(() => {
+    const uuids = segments.filter(isUuid);
+    if (uuids.length === 0) return;
+
+    // Only fetch names we haven't resolved yet
+    const toResolve = uuids.filter((id) => !resolvedNames[id]);
+    if (toResolve.length === 0) return;
+
     fetch('/api/remix-engine/projects')
       .then((r) => r.json())
-      .then((d) => setProjects(d.projects || []))
+      .then((d) => {
+        const projects: { id: string; name: string }[] = d.projects || [];
+        const map: Record<string, string> = {};
+        for (const p of projects) {
+          if (toResolve.includes(p.id)) {
+            map[p.id] = p.name;
+          }
+        }
+        if (Object.keys(map).length > 0) {
+          setResolvedNames((prev) => ({ ...prev, ...map }));
+        }
+      })
       .catch(() => {});
-  }, []);
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (projects.length === 0) {
-    return (
-      <p className="text-[--re-text-muted] text-sm">
-        No projects found. Create a project first.
-      </p>
-    );
+  const crumbs: Crumb[] = [{ label: 'Sandbox', href: '/projects' }];
+
+  let builtPath = '';
+  for (const seg of segments) {
+    builtPath += '/' + seg;
+    if (isUuid(seg)) {
+      crumbs.push({
+        label: resolvedNames[seg] || '...',
+        href: builtPath,
+      });
+    } else {
+      crumbs.push({
+        label: seg.charAt(0).toUpperCase() + seg.slice(1),
+        href: builtPath,
+      });
+    }
   }
 
-  return (
-    <select
-      onChange={(e) => onProjectSelected(e.target.value)}
-      defaultValue=""
-      className="w-full h-9 px-3 rounded-[--re-border-radius] bg-[--re-bg-input] border border-[--re-border] text-[--re-text-primary] text-sm outline-none focus:border-[--re-accent-primary]"
-    >
-      <option value="" disabled>
-        Select a project...
-      </option>
-      {projects.map((p) => (
-        <option key={p.id} value={p.id}>
-          {p.name}
-        </option>
-      ))}
-    </select>
-  );
+  return crumbs;
 }
 
 export function Header({ user }: HeaderProps) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const pageTitle = getPageTitle(pathname);
+  const crumbs = useBreadcrumbs();
   const initials = getInitials(user);
 
-  const [quickAddOpen, setQuickAddOpen] = useState(false);
-  const [quickAddProjectId, setQuickAddProjectId] = useState<string | null>(null);
-
   return (
-    <>
-      <header
-        style={{
-          height: 'var(--re-header-height)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 1.5rem',
-          background: 'var(--re-bg-primary)',
-          borderBottom: '1px solid var(--re-border-subtle)',
-          flexShrink: 0,
-        }}
-      >
-        {/* Page title */}
-        <h1
-          style={{
-            color: 'var(--re-text-primary)',
-            fontWeight: 'var(--re-font-semibold)',
-            fontSize: 'var(--re-text-lg)',
-            margin: 0,
-          }}
-        >
-          {pageTitle}
-        </h1>
-
-        {/* Right side: quick-add button + user avatar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {/* Quick scrape button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="w-8 h-8 text-[--re-text-muted] hover:text-[--re-text-primary]"
-            onClick={() => {
-              setQuickAddProjectId(null);
-              setQuickAddOpen(true);
-            }}
-            title="Quick scrape"
-          >
-            <Plus className="w-4 h-4" />
-          </Button>
-
-          {/* User avatar dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  borderRadius: '50%',
-                  padding: 0,
-                }}
-                aria-label="User menu"
-              >
-                <Avatar
+    <header
+      style={{
+        height: 'var(--re-header-height)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 1.5rem',
+        background: 'var(--re-bg-primary)',
+        borderBottom: '1px solid var(--re-border-subtle)',
+        flexShrink: 0,
+      }}
+    >
+      {/* Breadcrumbs */}
+      <nav className="flex items-center gap-1.5 min-w-0">
+        {crumbs.map((crumb, i) => {
+          const isLast = i === crumbs.length - 1;
+          return (
+            <span key={i} className="flex items-center gap-1.5 min-w-0">
+              {i > 0 && (
+                <ChevronRight
+                  className="w-3.5 h-3.5 flex-shrink-0"
+                  style={{ color: 'var(--re-text-disabled)' }}
+                />
+              )}
+              {isLast ? (
+                <span
+                  className="truncate"
                   style={{
-                    width: 32,
-                    height: 32,
-                    border: '1px solid var(--re-border-subtle)',
+                    color: 'var(--re-text-primary)',
+                    fontWeight: 'var(--re-font-semibold)',
+                    fontSize: 'var(--re-text-sm)',
                   }}
                 >
-                  <AvatarFallback
-                    style={{
-                      background: 'var(--re-accent-primary-subtle)',
-                      color: 'var(--re-accent-primary)',
-                      fontSize: 'var(--re-text-xs)',
-                      fontWeight: 'var(--re-font-medium)',
-                    }}
-                  >
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
+                  {crumb.label}
+                </span>
+              ) : (
+                <Link
+                  href={crumb.href!}
+                  className="truncate hover:underline"
+                  style={{
+                    color: 'var(--re-text-muted)',
+                    fontSize: 'var(--re-text-sm)',
+                  }}
+                >
+                  {crumb.label}
+                </Link>
+              )}
+            </span>
+          );
+        })}
+      </nav>
+
+      {/* User avatar dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              borderRadius: '50%',
+              padding: 0,
+            }}
+            aria-label="User menu"
+          >
+            <Avatar
               style={{
-                background: 'var(--re-bg-secondary)',
-                border: '1px solid var(--re-border)',
-                borderRadius: 'var(--re-border-radius)',
-                minWidth: '180px',
+                width: 32,
+                height: 32,
+                border: '1px solid var(--re-border-subtle)',
               }}
             >
-              <DropdownMenuLabel
+              <AvatarFallback
                 style={{
-                  color: 'var(--re-text-primary)',
-                  fontSize: 'var(--re-text-sm)',
+                  background: 'var(--re-accent-primary-subtle)',
+                  color: 'var(--re-accent-primary)',
+                  fontSize: 'var(--re-text-xs)',
+                  fontWeight: 'var(--re-font-medium)',
                 }}
               >
-                {user?.name ?? user?.email ?? 'Account'}
-              </DropdownMenuLabel>
-              {user?.email && user?.name && (
-                <div
-                  style={{
-                    padding: '0 8px 6px',
-                    color: 'var(--re-text-muted)',
-                    fontSize: 'var(--re-text-xs)',
-                  }}
-                >
-                  {user.email}
-                </div>
-              )}
-              <DropdownMenuSeparator
-                style={{ background: 'var(--re-border-subtle)' }}
-              />
-              <DropdownMenuItem
-                style={{
-                  color: 'var(--re-text-secondary)',
-                  fontSize: 'var(--re-text-sm)',
-                  cursor: 'pointer',
-                }}
-                onSelect={() => {
-                  // Sign out will be wired in auth integration plan.
-                }}
-              >
-                Sign out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </header>
-
-      {/* Quick-add floating modal */}
-      {quickAddOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          style={{ backdropFilter: 'blur(4px)' }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setQuickAddOpen(false);
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          style={{
+            background: 'var(--re-bg-secondary)',
+            border: '1px solid var(--re-border)',
+            borderRadius: 'var(--re-border-radius)',
+            minWidth: '180px',
           }}
         >
-          <div
-            className="w-full max-w-xl mx-4 p-4 rounded-[--re-border-radius-lg] bg-[--re-bg-secondary] border border-[--re-border]"
-            style={{ boxShadow: 'var(--re-shadow-lg)' }}
+          <DropdownMenuLabel
+            style={{
+              color: 'var(--re-text-primary)',
+              fontSize: 'var(--re-text-sm)',
+            }}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3
-                className="font-medium"
-                style={{ color: 'var(--re-text-primary)' }}
-              >
-                Quick Scrape
-              </h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-6 h-6"
-                onClick={() => setQuickAddOpen(false)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
+            {user?.name ?? user?.email ?? 'Account'}
+          </DropdownMenuLabel>
+          {user?.email && user?.name && (
+            <div
+              style={{
+                padding: '0 8px 6px',
+                color: 'var(--re-text-muted)',
+                fontSize: 'var(--re-text-xs)',
+              }}
+            >
+              {user.email}
             </div>
-            {/* Project selector */}
-            <ProjectSelector onProjectSelected={setQuickAddProjectId} />
-            {/* ScrapeInput — shown once a project is selected */}
-            {quickAddProjectId && (
-              <div className="mt-3">
-                <ScrapeInput
-                  projectId={quickAddProjectId}
-                  onScrapeStarted={() => {
-                    setQuickAddOpen(false);
-                    // Navigate to the project page — user will see progress there
-                    router.push(`/dashboard/projects/${quickAddProjectId}`);
-                  }}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </>
+          )}
+          <DropdownMenuSeparator
+            style={{ background: 'var(--re-border-subtle)' }}
+          />
+          <DropdownMenuItem
+            style={{
+              color: 'var(--re-text-secondary)',
+              fontSize: 'var(--re-text-sm)',
+              cursor: 'pointer',
+            }}
+            onSelect={() => {
+              // Sign out will be wired later.
+            }}
+          >
+            Sign out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </header>
   );
 }

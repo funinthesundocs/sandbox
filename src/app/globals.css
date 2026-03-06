@@ -2,11 +2,18 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Tailwind v4 dark mode — next-themes sets .dark class on <html> */
+@source not "../../.planning/**";
+@source not "../../.claude/**";
+@source not "../../design-system/**";
+@source not "../../*.html";
+@source not "../../*.md";
+@source not "../../dist/**";
+
+/* Tailwind v4 dark mode - next-themes sets .dark class on <html> */
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   shadcn/ui base variables (oklch — shadcn v3 default)
+   shadcn/ui base variables (oklch - shadcn v3 default)
    ============================================================ */
 
 :root {
@@ -47,7 +54,7 @@
   /* ============================================================
      RemixEngine --re-* design tokens
      Source of truth: design-system/MASTER.md
-     All values use HSL — NO hardcoded hex colors
+     All values use HSL - NO hardcoded hex colors
      ============================================================ */
 
   /* Background Colors */
@@ -154,7 +161,7 @@
 }
 
 /* ============================================================
-   @theme inline — map --re-* tokens to Tailwind color utilities
+   @theme inline - map --re-* tokens to Tailwind color utilities
    Enables: bg-re-bg-primary, text-re-accent-primary, etc.
    shadcn/ui vars are already mapped via @import "shadcn/tailwind.css"
    ============================================================ */
@@ -200,7 +207,7 @@
 }
 
 /* ============================================================
-   Base styles — dark SaaS dashboard defaults
+   Base styles - dark SaaS dashboard defaults
    ============================================================ */
 
 body {

@@ -1,22 +1,17 @@
 'use client';
 
-// src/components/layout/Sidebar.tsx
-// Collapsible sidebar with role-based navigation and localStorage persistence.
-// Only renders in standalone mode (mode gate enforced in dashboard layout.tsx).
-// React 19 — no forwardRef.
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   FolderOpen,
-  ListChecks,
-  BarChart2,
+  Lightbulb,
   ShieldCheck,
   Settings,
   ChevronLeft,
   ChevronRight,
-  Zap,
+  ChevronDown,
+  FlaskConical,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -33,15 +28,14 @@ interface NavItem {
   adminOnly?: boolean;
 }
 
-const mainNav: NavItem[] = [
-  { label: 'Projects', href: '/dashboard/projects', icon: FolderOpen },
-  { label: 'Queue', href: '/dashboard/queue', icon: ListChecks },
-  { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart2 },
-];
+interface ProjectItem {
+  id: string;
+  name: string;
+}
 
 const bottomNav: NavItem[] = [
-  { label: 'Admin', href: '/dashboard/admin', icon: ShieldCheck, adminOnly: true },
-  { label: 'Settings', href: '/dashboard/settings', icon: Settings },
+  { label: 'Admin', href: '/admin', icon: ShieldCheck, adminOnly: true },
+  { label: 'Settings', href: '/settings', icon: Settings },
 ];
 
 interface SidebarProps {
@@ -50,15 +44,24 @@ interface SidebarProps {
 
 export function Sidebar({ userRole }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [projectsOpen, setProjectsOpen] = useState(true);
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
   const pathname = usePathname();
 
-  // Read collapse state from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem('re-sidebar-collapsed');
     if (stored !== null) {
       setCollapsed(stored === 'true');
     }
   }, []);
+
+  // Fetch projects for the accordion
+  useEffect(() => {
+    fetch('/api/remix-engine/projects')
+      .then((r) => r.json())
+      .then((d) => setProjects(d.projects || []))
+      .catch(() => {});
+  }, [pathname]); // re-fetch when navigating (catches new project creation)
 
   function toggleCollapsed() {
     const next = !collapsed;
@@ -71,7 +74,6 @@ export function Sidebar({ userRole }: SidebarProps) {
   }
 
   function renderNavItem(item: NavItem) {
-    // Filter admin-only items for non-admin users
     if (item.adminOnly && userRole && userRole !== 'admin') {
       return null;
     }
@@ -133,6 +135,8 @@ export function Sidebar({ userRole }: SidebarProps) {
     return <div key={item.href}>{linkEl}</div>;
   }
 
+  const projectsActive = isActive('/projects');
+
   return (
     <aside
       style={{
@@ -147,7 +151,7 @@ export function Sidebar({ userRole }: SidebarProps) {
         overflow: 'hidden',
       }}
     >
-      {/* Logo area — matches header height */}
+      {/* Logo area */}
       <div
         style={{
           height: 'var(--re-header-height)',
@@ -167,7 +171,7 @@ export function Sidebar({ userRole }: SidebarProps) {
             overflow: 'hidden',
           }}
         >
-          <Zap
+          <FlaskConical
             style={{
               width: 20,
               height: 20,
@@ -185,12 +189,11 @@ export function Sidebar({ userRole }: SidebarProps) {
                 overflow: 'hidden',
               }}
             >
-              RemixEngine
+              Sandbox
             </span>
           )}
         </div>
 
-        {/* Collapse toggle button — only shown when expanded (icon visible via absolute in collapsed) */}
         {!collapsed && (
           <button
             onClick={toggleCollapsed}
@@ -255,10 +258,113 @@ export function Sidebar({ userRole }: SidebarProps) {
           gap: '2px',
         }}
       >
-        {mainNav.map((item) => renderNavItem(item))}
+        {/* Projects accordion */}
+        {collapsed ? (
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/projects"
+                  className="group hover:!bg-[--re-bg-hover] hover:!text-[--re-text-primary]"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 'var(--re-nav-item-height)',
+                    borderRadius: 'var(--re-border-radius)',
+                    background: projectsActive ? 'var(--re-accent-primary-subtle)' : 'transparent',
+                    color: projectsActive ? 'var(--re-accent-primary)' : 'var(--re-text-secondary)',
+                    textDecoration: 'none',
+                    width: '100%',
+                  }}
+                >
+                  <FolderOpen style={{ width: 18, height: 18, color: projectsActive ? 'var(--re-accent-primary)' : 'var(--re-text-muted)' }} />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Projects</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <div>
+            {/* Projects header row — clickable accordion toggle */}
+            <button
+              onClick={() => setProjectsOpen(!projectsOpen)}
+              className="group hover:!bg-[--re-bg-hover] hover:!text-[--re-text-primary]"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                height: 'var(--re-nav-item-height)',
+                padding: 'var(--re-nav-item-padding)',
+                borderRadius: 'var(--re-border-radius)',
+                background: projectsActive ? 'var(--re-accent-primary-subtle)' : 'transparent',
+                color: projectsActive ? 'var(--re-accent-primary)' : 'var(--re-text-secondary)',
+                fontWeight: projectsActive ? 'var(--re-font-medium)' : 'var(--re-font-normal)',
+                fontSize: 'var(--re-text-sm)',
+                width: '100%',
+                border: 'none',
+                cursor: 'pointer',
+                textDecoration: 'none',
+                textAlign: 'left',
+              }}
+            >
+              <FolderOpen style={{ width: 18, height: 18, flexShrink: 0, color: projectsActive ? 'var(--re-accent-primary)' : 'var(--re-text-muted)' }} />
+              <span style={{ flex: 1 }}>Projects</span>
+              <ChevronDown
+                style={{
+                  width: 14,
+                  height: 14,
+                  color: 'var(--re-text-disabled)',
+                  transition: 'transform var(--re-transition-fast)',
+                  transform: projectsOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+                }}
+              />
+            </button>
+
+            {/* Project children */}
+            {projectsOpen && (
+              <div style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '1px', marginTop: '2px' }}>
+                {projects.map((p) => {
+                  const href = `/projects/${p.id}`;
+                  const active = isActive(href);
+                  return (
+                    <Link
+                      key={p.id}
+                      href={href}
+                      className="group hover:!bg-[--re-bg-hover] hover:!text-[--re-text-primary]"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        height: '30px',
+                        padding: '0 8px',
+                        borderRadius: 'var(--re-border-radius)',
+                        background: active ? 'var(--re-accent-primary-subtle)' : 'transparent',
+                        color: active ? 'var(--re-accent-primary)' : 'var(--re-text-muted)',
+                        fontSize: '13px',
+                        textDecoration: 'none',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <Lightbulb style={{ width: 14, height: 14, flexShrink: 0, opacity: 0.6 }} />
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {p.name}
+                      </span>
+                    </Link>
+                  );
+                })}
+                {projects.length === 0 && (
+                  <span style={{ color: 'var(--re-text-disabled)', fontSize: '12px', padding: '4px 8px' }}>
+                    No projects
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </nav>
 
-      {/* Bottom nav — admin + settings */}
+      {/* Bottom nav */}
       <div
         style={{
           padding: '8px',
