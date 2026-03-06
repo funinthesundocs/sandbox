@@ -163,12 +163,14 @@ export function Sidebar({ userRole }: SidebarProps) {
           flexShrink: 0,
         }}
       >
-        <div
+        <Link
+          href="/projects"
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
             overflow: 'hidden',
+            textDecoration: 'none',
           }}
         >
           <FlaskConical
@@ -192,7 +194,7 @@ export function Sidebar({ userRole }: SidebarProps) {
               Sandbox
             </span>
           )}
-        </div>
+        </Link>
 
         {!collapsed && (
           <button

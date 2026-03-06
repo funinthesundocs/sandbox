@@ -108,7 +108,7 @@ export function Header({ user }: HeaderProps) {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 1.5rem',
-        background: 'var(--re-bg-primary)',
+        background: '#27272a',
         borderBottom: '1px solid var(--re-border-subtle)',
         flexShrink: 0,
       }}

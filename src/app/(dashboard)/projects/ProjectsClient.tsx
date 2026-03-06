@@ -207,9 +207,9 @@ function ListView({ projects }: { projects: Project[] }) {
 }
 
 function getInitialView(): 'grid' | 'list' {
-  if (typeof window === 'undefined') return 'grid';
+  if (typeof window === 'undefined') return 'list';
   const stored = localStorage.getItem('re-projects-view');
-  return stored === 'list' ? 'list' : 'grid';
+  return stored === 'grid' ? 'grid' : 'list';
 }
 
 export function ProjectsClient({ projects }: ProjectsClientProps) {

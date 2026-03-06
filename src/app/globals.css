@@ -60,7 +60,7 @@
   /* Background Colors */
   --re-bg-primary: hsl(240 10% 3.9%);
   --re-bg-secondary: hsl(240 5% 8%);
-  --re-bg-sidebar: hsl(240 6% 6%);
+  --re-bg-sidebar: #18181b;
   --re-bg-hover: hsl(240 5% 12%);
   --re-bg-active: hsl(240 5% 15%);
   --re-bg-input: hsl(240 5% 10%);
